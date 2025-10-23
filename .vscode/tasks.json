@@ -1,0 +1,16 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "cargo build (guild)",
+            "type": "shell",
+            "command": "cargo build",
+            "options": {
+                "cwd": "${workspaceFolder}" // каталог, где лежит Cargo.toml
+            },
+            "problemMatcher": [
+                "$rustc"
+            ]
+        }
+    ]
+}
