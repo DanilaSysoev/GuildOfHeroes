@@ -1,15 +1,12 @@
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 pub struct TilePos {
     line: i32,
-    column: i32
+    column: i32,
 }
 
 impl TilePos {
     pub fn new(line: i32, column: i32) -> Self {
-        TilePos {
-            line: line,
-            column: column
-        }
+        TilePos { line, column }
     }
 
     pub fn line(&self) -> i32 {
