@@ -17,3 +17,9 @@ impl TilePos {
         self.column
     }
 }
+
+impl From<(i32, i32)> for TilePos {
+    fn from((line, column): (i32, i32)) -> Self {
+        Self { line, column }
+    }
+}
