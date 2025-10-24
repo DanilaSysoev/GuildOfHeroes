@@ -5,4 +5,6 @@ edition = "2024"
 
 [dependencies]
 bracket-lib = "0.8.7"
+bracket-noise = "0.8.7"
 engine = { path = "../engine" }
+image = "0.25.8"
