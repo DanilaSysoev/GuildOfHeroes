@@ -4,6 +4,8 @@ use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::path::Path;
 
+use crate::utils::ensure_parent_dirs;
+
 #[derive(Clone, Copy, Debug)]
 pub struct NoiseParams {
     pub frequency: f32,  // базовая частота, напр. 0.01..0.03
@@ -51,6 +53,8 @@ pub fn save_heightmap_png<P: AsRef<Path>>(
     height: u32,
     data_01: &[f64],
 ) -> image::ImageResult<()> {
+    ensure_parent_dirs(&path)?;
+
     assert_eq!(data_01.len(), (width * height) as usize);
 
     let mut img = GrayImage::new(width, height);
@@ -67,6 +71,8 @@ pub fn save_heightmap_csv<P: AsRef<Path>>(
     height: u32,
     data_01: &[f64],
 ) -> std::io::Result<()> {
+    ensure_parent_dirs(&path)?;
+
     assert_eq!(data_01.len(), (width * height) as usize);
 
     let file = File::create(path)?;
