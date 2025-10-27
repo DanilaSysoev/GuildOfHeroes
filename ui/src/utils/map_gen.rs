@@ -47,6 +47,31 @@ pub fn generate_heightmap_f64(
     data
 }
 
+#[rustfmt::skip]
+pub fn generate_heightmap_f64_2d(
+    width: usize,
+    height: usize,
+    seed: u64,
+    params: NoiseParams,
+) -> Vec<Vec<f64>> {
+    let generated =
+        generate_heightmap_f64(width as u32, height as u32, seed, params);
+    let mut result = Vec::with_capacity(height);
+
+    for y in 0..height {
+        result.push(
+            generated
+                .iter()
+                .skip(y * width)
+                .take(width)
+                .cloned()
+                .collect(),
+        );
+    }
+
+    result
+}
+
 pub fn save_heightmap_png<P: AsRef<Path>>(
     path: P,
     width: u32,
