@@ -1,5 +1,6 @@
 use crate::world::geometry::TilePos;
 
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum SurfaceType {
     Water,
     Ground,
@@ -7,6 +8,18 @@ pub enum SurfaceType {
     Mountain,
     Forest,
     Swamp,
+    // if you add new surface type, you should add it to ALL
+}
+
+impl SurfaceType {
+    pub const ALL: [SurfaceType; 6] = [
+        SurfaceType::Water,
+        SurfaceType::Ground,
+        SurfaceType::Hill,
+        SurfaceType::Mountain,
+        SurfaceType::Forest,
+        SurfaceType::Swamp,
+    ];
 }
 
 pub struct Tile {
