@@ -2,3 +2,6 @@
 
 #[cfg(test)]
 mod world;
+
+#[cfg(test)]
+mod services;
