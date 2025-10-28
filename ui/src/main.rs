@@ -24,10 +24,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let _ = 
         MapBuilderFromHeights::new(generate_heightmap_f64_2d(
-        width as usize,
-        height as usize,
-        seed,
-        params,
-    ));
+            width as usize,
+            height as usize,
+            seed,
+            params,
+        ).iter()
+         .map(|vec| vec.as_slice())
+         .collect::<Vec<_>>()
+         .as_slice());
     Ok(())
 }

@@ -39,9 +39,9 @@ pub struct MapBuilderFromHeights {
 }
 
 impl MapBuilderFromHeights {
-    pub fn new(data: Vec<Vec<f64>>) -> Self {
+    pub fn new(data: &[&[f64]]) -> Self {
         let mut map = MapBuilderFromHeights {
-            data,
+            data: data.iter().map(|slice| slice.to_vec()).collect(),
             surface_types_intervals: HashMap::new(),
             default_surface_type: Self::DEFAULT_SURFACE_TYPE,
         };
