@@ -31,6 +31,37 @@ impl Camera {
         self.with_top(top).with_left(left)
     }
 
+    pub fn left(&self) -> i32 {
+        self.left
+    }
+
+    pub fn top(&self) -> i32 {
+        self.top
+    }
+
+    pub fn right(&self) -> i32 {
+        self.left + self.width - 1
+    }
+
+    pub fn bottom(&self) -> i32 {
+        self.top + self.height - 1
+    }
+
+    pub fn width(&self) -> i32 {
+        self.width
+    }
+
+    pub fn height(&self) -> i32 {
+        self.height
+    }
+
+    pub fn contains(&self, line: i32, column: i32) -> bool {
+        line >= self.top()
+            && line <= self.bottom()
+            && column >= self.left()
+            && column <= self.right()
+    }
+
     pub fn shift(&mut self, direction: Direction) {
         match direction {
             Direction::Up => self.top -= 1,

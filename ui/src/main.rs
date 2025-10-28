@@ -2,6 +2,9 @@ mod config;
 mod drawing;
 mod utils;
 
+#[cfg(test)]
+mod tests;
+
 use crate::utils::map_gen::generate_heightmap_f64_2d;
 use clap::{Parser, ValueEnum};
 use config::load_config;
@@ -18,6 +21,7 @@ enum Mode {
 }
 
 #[derive(Parser, Debug)]
+#[command(author, version, about)]
 struct Args {
     #[arg(value_enum, short, long, default_value_t = Mode::ReadConfig)]
     mode: Mode,
