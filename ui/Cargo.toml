@@ -4,7 +4,12 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+anyhow = "1.0.100"
 bracket-lib = "0.8.7"
 bracket-noise = "0.8.7"
+clap = { version = "4.5.50", features = ["derive"] }
+config = "0.15.18"
 engine = { path = "../engine" }
 image = "0.25.8"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.145"
