@@ -23,12 +23,28 @@ impl<T: Eq + Hash> TileMapper<T> {
     }
 }
 
-pub fn build_surface_tile_mapper() -> TileMapper<SurfaceType> {
+#[derive(Eq, PartialEq, Hash)]
+pub enum SurfaceTile {
+    Surface { surface: SurfaceType },
+    Unknown,
+}
+
+impl From<Option<&SurfaceType>> for SurfaceTile {
+    fn from(surface: Option<&SurfaceType>) -> Self {
+        match surface {
+            Some(s) => SurfaceTile::Surface { surface: *s },
+            None => SurfaceTile::Unknown,
+        }
+    }
+}
+
+pub fn build_surface_tile_mapper() -> TileMapper<SurfaceTile> {
     TileMapper::new()
-        .add(SurfaceType::Water, 0)
-        .add(SurfaceType::Swamp, 1)
-        .add(SurfaceType::Ground, 2)
-        .add(SurfaceType::Hill, 3)
-        .add(SurfaceType::Forest, 4)
-        .add(SurfaceType::Mountain, 5)
+        .add(SurfaceTile::from(Some(&SurfaceType::Water)), 0)
+        .add(SurfaceTile::from(Some(&SurfaceType::Swamp)), 1)
+        .add(SurfaceTile::from(Some(&SurfaceType::Ground)), 2)
+        .add(SurfaceTile::from(Some(&SurfaceType::Hill)), 3)
+        .add(SurfaceTile::from(Some(&SurfaceType::Forest)), 4)
+        .add(SurfaceTile::from(Some(&SurfaceType::Mountain)), 5)
+        .add(SurfaceTile::Unknown, 19)
 }

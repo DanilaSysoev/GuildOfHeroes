@@ -11,7 +11,7 @@ use crate::{
     config::{GameConfig, load_config},
     drawing::{
         Camera,
-        tile_mapping::{TileMapper, build_surface_tile_mapper},
+        tile_mapping::{SurfaceTile, TileMapper, build_surface_tile_mapper},
     },
     errors::GameUiError,
     utils::map_gen::generate_heightmap_f64_2d,
@@ -20,7 +20,7 @@ use crate::{
 pub struct Game {
     map: Map,
     camera: Camera,
-    surface_mapper: TileMapper<SurfaceType>,
+    surface_mapper: TileMapper<SurfaceTile>,
 }
 
 impl Game {
@@ -70,20 +70,19 @@ impl GameState for Game {
     fn tick(&mut self, ctx: &mut BTerm) {
         ctx.set_active_console(0);
         ctx.cls();
-        for column in 0..self.camera.width() {
-            for line in 0..self.camera.height() {
+        for column in -1..self.camera.width() as i32 - 1 {
+            for line in -1..self.camera.height() as i32 - 1 {
+                let tile_surface = self
+                    .map
+                    .get_tile((line, column))
+                    .map(|tile| tile.surface_type());
                 ctx.set(
-                    column,
-                    line,
+                    column + 1,
+                    line + 1,
                     RGB::named(WHITE),
                     RGB::named(BLACK),
                     self.surface_mapper
-                        .index(
-                            self.map
-                                .get_tile((line as i32, column as i32))
-                                .unwrap()
-                                .surface_type(),
-                        )
+                        .index(&SurfaceTile::from(tile_surface))
                         .unwrap(),
                 );
             }
