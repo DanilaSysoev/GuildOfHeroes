@@ -13,5 +13,10 @@
             "lacunarity": 2.0,
             "gain": 0.45
         }
+    },
+    "surface_font": {
+        "path": "resources/fonts/surface_tiles.png",
+        "width": 24,
+        "height": 24
     }
 }

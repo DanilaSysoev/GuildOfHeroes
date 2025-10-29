@@ -32,9 +32,17 @@ pub struct MapConfig {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct FontConfig {
+    pub path: String,
+    pub width: u32,
+    pub height: u32,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct GameConfig {
     pub camera: CameraConfig,
     pub map: MapConfig,
+    pub surface_font: FontConfig,
 }
 
 pub fn load_config() -> Result<GameConfig, GameUiError> {

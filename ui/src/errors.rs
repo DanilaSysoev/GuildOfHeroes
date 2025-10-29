@@ -8,11 +8,25 @@ use image::ImageError;
 
 #[derive(Debug)]
 pub enum GameUiError {
-    LoadConfig { error: ConfigError },
-    Engine { error: GameError },
-    System { error: Box<dyn SystemError> },
-    Io { error: IoError },
-    Image { error: ImageError },
+    LoadConfig {
+        error: ConfigError,
+    },
+    Engine {
+        error: GameError,
+    },
+    System {
+        error: Box<dyn SystemError>,
+    },
+    Io {
+        error: IoError,
+    },
+    Image {
+        error: ImageError,
+    },
+    BracketLib {
+        error:
+            Box<dyn std::error::Error + std::marker::Send + std::marker::Sync>,
+    },
 }
 
 impl From<GameError> for GameUiError {
@@ -42,5 +56,17 @@ impl From<IoError> for GameUiError {
 impl From<ImageError> for GameUiError {
     fn from(error: ImageError) -> Self {
         GameUiError::Image { error }
+    }
+}
+
+impl From<Box<dyn std::error::Error + std::marker::Send + std::marker::Sync>>
+    for GameUiError
+{
+    fn from(
+        error: Box<
+            dyn std::error::Error + std::marker::Send + std::marker::Sync,
+        >,
+    ) -> Self {
+        GameUiError::BracketLib { error }
     }
 }

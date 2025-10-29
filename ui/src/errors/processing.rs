@@ -9,6 +9,7 @@ pub fn process_ui_error(error: GameUiError) {
         GameUiError::System { error } => process_system_error(error),
         GameUiError::Io { error } => process_io_error(error),
         GameUiError::Image { error } => process_image_error(error),
+        GameUiError::BracketLib { error } => process_bracket_lib_error(error),
     }
 }
 
@@ -30,4 +31,10 @@ fn process_io_error(error: std::io::Error) {
 
 fn process_image_error(error: image::ImageError) {
     println!("Image error: {:?}", error)
+}
+
+fn process_bracket_lib_error(
+    error: Box<dyn std::error::Error + std::marker::Send + std::marker::Sync>,
+) {
+    println!("Bracket lib error: {:?}", error);
 }
