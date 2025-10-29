@@ -2,5 +2,16 @@
     "camera": {
         "width": 80,
         "height": 50
+    },
+    "map": {
+        "width": 128,
+        "height": 128,
+        "seed": 1,
+        "noise_params": {
+            "frequency": 0.02,
+            "octaves": 6,
+            "lacunarity": 2.0,
+            "gain": 0.45
+        }
     }
 }
