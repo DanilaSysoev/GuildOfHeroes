@@ -8,12 +8,12 @@ pub enum Direction {
 pub struct Camera {
     top: i32,
     left: i32,
-    width: i32,
-    height: i32,
+    width: u32,
+    height: u32,
 }
 
 impl Camera {
-    pub fn new(width: i32, height: i32) -> Self {
+    pub fn new(width: u32, height: u32) -> Self {
         Self { top: 0, left: 0, width, height }
     }
 
@@ -40,18 +40,18 @@ impl Camera {
     }
 
     pub fn right(&self) -> i32 {
-        self.left + self.width - 1
+        self.left + self.width as i32 - 1
     }
 
     pub fn bottom(&self) -> i32 {
-        self.top + self.height - 1
+        self.top + self.height as i32 - 1
     }
 
-    pub fn width(&self) -> i32 {
+    pub fn width(&self) -> u32 {
         self.width
     }
 
-    pub fn height(&self) -> i32 {
+    pub fn height(&self) -> u32 {
         self.height
     }
 

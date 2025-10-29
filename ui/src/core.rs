@@ -4,12 +4,13 @@ use engine::{
 };
 
 use crate::{
-    config::load_config, errors::GameUiError,
+    config::load_config, drawing::Camera, errors::GameUiError,
     utils::map_gen::generate_heightmap_f64_2d,
 };
 
 struct Game {
     map: Map,
+    camera: Camera,
 }
 
 impl Game {
@@ -22,6 +23,13 @@ impl Game {
                 .collect::<Vec<_>>()
                 .as_slice(),
         );
-        Ok(Game { map: map_builder.build()? })
+        Ok(Game {
+            map: map_builder.build()?,
+            camera: Camera::new(config.camera.width, config.camera.height),
+        })
+    }
+
+    pub fn run(&mut self) -> Result<(), GameUiError> {
+        Ok(())
     }
 }
