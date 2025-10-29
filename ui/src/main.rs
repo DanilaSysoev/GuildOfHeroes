@@ -8,6 +8,7 @@ mod utils;
 mod tests;
 
 use crate::{
+    core::Game,
     errors::{GameUiError, processing::process_ui_error},
     utils::map_gen::generate_heightmap_f64_2d,
 };
@@ -85,6 +86,5 @@ fn build_test_map() -> Result<(), GameUiError> {
 }
 
 fn run_game() -> Result<(), GameUiError> {
-    println!("Здесь будет игра");
-    Ok(())
+    Game::run()
 }
