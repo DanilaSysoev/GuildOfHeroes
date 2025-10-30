@@ -21,5 +21,11 @@
         "path": "fonts/surface_tiles.png",
         "width": 24,
         "height": 24
+    },
+    "menu_renderer": {
+        "top_border": 1,
+        "bottom_border": 1,
+        "left_border": 1,
+        "right_border": 1
     }
 }

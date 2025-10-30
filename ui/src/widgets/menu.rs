@@ -1,6 +1,6 @@
 use bracket_lib::prelude::BTerm;
 
-use crate::core::GameEntity;
+use crate::{core::GameEntity, widgets::geometry::Widget};
 
 pub trait MenuAction {
     fn run(&self, ctx: &mut BTerm);
@@ -34,9 +34,14 @@ impl MenuItem {
     pub fn select(&self, ctx: &mut BTerm) {
         self.action.run(ctx);
     }
+}
 
-    pub fn width(&self) -> u32 {
+impl Widget for MenuItem {
+    fn width(&self) -> u32 {
         self.text.chars().count() as u32
+    }
+    fn height(&self) -> u32 {
+        1
     }
 }
 
@@ -56,11 +61,25 @@ impl Menu {
         self
     }
 
-    pub fn width(&self) -> u32 {
-        self.items.iter().map(|item| item.width()).max().unwrap_or(0)
+    pub fn select(&self, index: usize, ctx: &mut BTerm) {
+        if let Some(item) = self.items.get(index) {
+            item.select(ctx);
+        }
+    }
+}
+
+impl Widget for Menu {
+    #[rustfmt::skip]
+    fn width(&self) -> u32 {
+        self
+            .items
+            .iter()
+            .map(|item| item.width())
+            .max()
+            .unwrap_or(0)
     }
 
-    pub fn height(&self) -> u32 {
+    fn height(&self) -> u32 {
         self.items.len() as u32
     }
 }

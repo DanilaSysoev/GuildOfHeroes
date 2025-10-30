@@ -4,6 +4,7 @@ use serde::Deserialize;
 use crate::errors::GameUiError;
 
 #[derive(Clone, Copy, Debug, Deserialize)]
+#[serde(default)]
 pub struct NoiseParams {
     pub frequency: f32,  // базовая частота, напр. 0.01..0.03
     pub octaves: i32,    // число октав, напр. 5..8
@@ -42,10 +43,31 @@ pub struct FontConfig {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(default)]
+pub struct MenuRenderedConfig {
+    pub top_border: u32,
+    pub bottom_border: u32,
+    pub left_border: u32,
+    pub right_border: u32,
+}
+
+impl Default for MenuRenderedConfig {
+    fn default() -> Self {
+        Self {
+            top_border: 1,
+            bottom_border: 1,
+            left_border: 1,
+            right_border: 1,
+        }
+    }
+}
+
+#[derive(Debug, Deserialize)]
 pub struct GameConfig {
     pub camera: CameraConfig,
     pub map: MapConfig,
     pub surface_font: FontConfig,
+    pub menu_renderer: MenuRenderedConfig,
 }
 
 pub fn load_config() -> Result<GameConfig, GameUiError> {
