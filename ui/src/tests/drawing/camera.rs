@@ -151,4 +151,64 @@ mod camera_tests {
         let camera = get_camera().with_left(20);
         assert_eq!(camera.column_to_world(5), 25)
     }
+
+    #[test]
+    pub fn zoom_in__increase_width__height_is_correct() {
+        let mut camera = get_camera().with_zoom_step(10);
+        camera.zoom_in();
+
+        assert_eq!(camera.width(), BASE_WIDTH - 10);
+        assert_eq!(camera.height(), 31);
+    }
+
+    #[test]
+    pub fn zoom_out__decrease_width__height_is_correct() {
+        let mut camera = get_camera().with_zoom_step(10);
+        camera.zoom_out();
+
+        assert_eq!(camera.width(), BASE_WIDTH + 10);
+        assert_eq!(camera.height(), 42);
+    }
+
+    #[test]
+    pub fn zoom_reset__zoom_out_twice_then_reset__size_is_correct() {
+        let mut camera = get_camera().with_zoom_step(10);
+        camera.zoom_out();
+        camera.zoom_out();
+        camera.zoom_reset();
+
+        assert_eq!(camera.width(), BASE_WIDTH);
+        assert_eq!(camera.height(), BASE_HEIGHT);
+    }
+
+    #[test]
+    pub fn zoom_reset__zoom_in_twice_then_reset__size_is_correct() {
+        let mut camera = get_camera().with_zoom_step(10);
+        camera.zoom_in();
+        camera.zoom_in();
+        camera.zoom_reset();
+
+        assert_eq!(camera.width(), BASE_WIDTH);
+        assert_eq!(camera.height(), BASE_HEIGHT);
+    }
+
+    #[test]
+    pub fn zoom_reset__zoom_out_then_reset__size_is_correct() {
+        let mut camera = get_camera().with_zoom_step(10);
+        camera.zoom_out();
+        camera.zoom_reset();
+
+        assert_eq!(camera.width(), BASE_WIDTH);
+        assert_eq!(camera.height(), BASE_HEIGHT);
+    }
+
+    #[test]
+    pub fn zoom_reset__zoom_in_then_reset__size_is_correct() {
+        let mut camera = get_camera().with_zoom_step(10);
+        camera.zoom_in();
+        camera.zoom_reset();
+
+        assert_eq!(camera.width(), BASE_WIDTH);
+        assert_eq!(camera.height(), BASE_HEIGHT);
+    }
 }

@@ -55,6 +55,11 @@ impl Camera {
         self.with_top(top).with_left(left)
     }
 
+    pub fn with_zoom_step(mut self, zoom_step: u32) -> Self {
+        self.zoom_step = zoom_step;
+        self
+    }
+
     pub fn left(&self) -> i32 {
         self.left
     }
