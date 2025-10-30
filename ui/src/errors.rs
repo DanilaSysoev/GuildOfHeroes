@@ -27,6 +27,9 @@ pub enum GameUiError {
         error:
             Box<dyn std::error::Error + std::marker::Send + std::marker::Sync>,
     },
+    Configuration {
+        what: String,
+    },
 }
 
 impl From<GameError> for GameUiError {
@@ -68,5 +71,17 @@ impl From<Box<dyn std::error::Error + std::marker::Send + std::marker::Sync>>
         >,
     ) -> Self {
         GameUiError::BracketLib { error }
+    }
+}
+
+impl From<String> for GameUiError {
+    fn from(what: String) -> Self {
+        GameUiError::Configuration { what }
+    }
+}
+
+impl From<&str> for GameUiError {
+    fn from(what: &str) -> Self {
+        GameUiError::Configuration { what: what.to_string() }
     }
 }

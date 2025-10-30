@@ -21,6 +21,9 @@ impl Default for NoiseParams {
 pub struct CameraConfig {
     pub width: u32,
     pub height: u32,
+    pub min_width: u32,
+    pub max_width: u32,
+    pub zoom_step: u32,
 }
 
 #[derive(Debug, Deserialize)]

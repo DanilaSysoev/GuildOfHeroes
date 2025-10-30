@@ -1,7 +1,10 @@
 {
     "camera": {
         "width": 64,
-        "height": 36
+        "height": 36,
+        "min_width": 18,
+        "max_width": 128,
+        "zoom_step": 2
     },
     "map": {
         "width": 128,

@@ -34,7 +34,13 @@ impl Game {
         );
         Ok(Game {
             map: map_builder.build()?,
-            camera: Camera::new(config.camera.width, config.camera.height),
+            camera: Camera::new(
+                config.camera.width,
+                config.camera.min_width,
+                config.camera.max_width,
+                config.camera.height,
+                config.camera.zoom_step,
+            )?,
             surface_mapper: build_surface_tile_mapper(),
         })
     }
@@ -81,6 +87,15 @@ impl Game {
                 VirtualKeyCode::D | VirtualKeyCode::Right => {
                     self.camera.shift(Direction::Right)
                 },
+                VirtualKeyCode::Space => {
+                    self.camera.zoom_reset();
+                },
+                VirtualKeyCode::NumpadAdd => {
+                    self.camera.zoom_in();
+                },
+                VirtualKeyCode::NumpadSubtract => {
+                    self.camera.zoom_out();
+                },
                 _ => {},
             }
         }
@@ -93,6 +108,7 @@ impl Game {
     fn draw_map(&mut self, ctx: &mut BTerm) {
         ctx.set_active_console(0);
         ctx.cls();
+        ctx.set_char_size(self.camera.width(), self.camera.height());
         for column in 0..self.camera.width() as i32 {
             for line in 0..self.camera.height() as i32 {
                 let tile_surface = self

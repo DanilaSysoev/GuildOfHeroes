@@ -1,3 +1,5 @@
+use crate::errors::GameUiError;
+
 pub enum Direction {
     Up,
     Down,
@@ -8,13 +10,35 @@ pub enum Direction {
 pub struct Camera {
     top: i32,
     left: i32,
+    base_width: u32,
+    base_height: u32,
+    min_width: u32,
+    max_width: u32,
     width: u32,
     height: u32,
+    zoom_step: u32,
 }
 
 impl Camera {
-    pub fn new(width: u32, height: u32) -> Self {
-        Self { top: 0, left: 0, width, height }
+    pub fn new(
+        width: u32,
+        min_width: u32,
+        max_width: u32,
+        height: u32,
+        zoom_step: u32,
+    ) -> Result<Self, GameUiError> {
+        Self {
+            top: 0,
+            left: 0,
+            base_width: width,
+            base_height: height,
+            width,
+            height,
+            min_width,
+            max_width,
+            zoom_step,
+        }
+        .validate()
     }
 
     pub fn with_top(mut self, top: i32) -> Self {
@@ -85,5 +109,56 @@ impl Camera {
             Direction::Left => self.left -= 1,
             Direction::Right => self.left += 1,
         }
+    }
+
+    pub fn zoom_in(&mut self) {
+        self.width -= self.zoom_step;
+        if self.width < self.min_width {
+            self.width = self.min_width;
+        }
+        self.recalculate_height();
+    }
+
+    pub fn zoom_out(&mut self) {
+        self.width += self.zoom_step;
+        if self.width >= self.max_width {
+            self.width = self.max_width
+        }
+        self.recalculate_height();
+    }
+
+    pub fn zoom_reset(&mut self) {
+        self.width = self.base_width;
+        self.height = self.base_height;
+    }
+
+    fn recalculate_height(&mut self) {
+        self.height = ((self.base_height * self.width) as f32
+            / self.base_width as f32)
+            .ceil() as u32;
+    }
+
+    fn validate(self) -> Result<Self, GameUiError> {
+        let mut errors = Vec::<&str>::new();
+        if self.width < self.min_width || self.width > self.max_width {
+            errors.push(
+                "Error: Camera width out of bounds [min_width, max_width]",
+            );
+        }
+        if self.min_width > self.max_width {
+            errors.push("Error: Camera min_width greater than max_width");
+        }
+        if self.min_width == 0 {
+            errors.push("Error: Camera min_width cannot be zero");
+        }
+        if self.zoom_step < 1 {
+            errors.push("Error: Camera zoom_step cannot be less than 1");
+        }
+
+        if errors.is_empty() {
+            return Ok(self);
+        }
+
+        Err(GameUiError::from(errors.join("\n")))
     }
 }

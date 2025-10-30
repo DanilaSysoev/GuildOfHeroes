@@ -1,8 +1,15 @@
 mod camera_tests {
     use crate::drawing::{Camera, Direction};
 
+    const BASE_WIDTH: u32 = 64;
+    const BASE_HEIGHT: u32 = 36;
+    const MIN_WIDTH: u32 = 16;
+    const MAX_WIDTH: u32 = 128;
+    const ZOOM_STEP: u32 = 2;
+
     fn get_camera() -> Camera {
-        Camera::new(80, 50)
+        Camera::new(BASE_WIDTH, MIN_WIDTH, MAX_WIDTH, BASE_HEIGHT, ZOOM_STEP)
+            .unwrap()
     }
 
     #[test]
@@ -110,7 +117,7 @@ mod camera_tests {
     pub fn right__some_pos_and_width__right_is_correct() {
         let camera = get_camera().with_left(20);
 
-        assert_eq!(camera.right(), 99);
+        assert_eq!(camera.right(), BASE_WIDTH as i32 + 20 - 1);
     }
 
     #[test]
@@ -118,7 +125,7 @@ mod camera_tests {
     pub fn bottom__some_pos_and_height__bottom_is_correct() {
         let camera = get_camera().with_top(20);
 
-        assert_eq!(camera.bottom(), 69);
+        assert_eq!(camera.bottom(), BASE_HEIGHT as i32 + 20 - 1);
     }
 
     #[test]
