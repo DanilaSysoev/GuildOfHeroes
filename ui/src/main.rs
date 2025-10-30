@@ -3,6 +3,7 @@ mod core;
 mod drawing;
 mod errors;
 mod utils;
+mod widgets;
 
 #[cfg(test)]
 mod tests;

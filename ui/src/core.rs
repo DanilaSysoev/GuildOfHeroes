@@ -17,6 +17,10 @@ use crate::{
     utils::map_gen::generate_heightmap_f64_2d,
 };
 
+pub trait GameEntity {
+    fn update(&mut self, ctx: &mut BTerm);
+}
+
 pub struct Game {
     map: Map,
     camera: Camera,
