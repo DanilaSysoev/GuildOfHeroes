@@ -120,4 +120,28 @@ mod camera_tests {
 
         assert_eq!(camera.bottom(), 69);
     }
+
+    #[test]
+    pub fn to_screen_line__some_pos__result_is_correct() {
+        let camera = get_camera().with_top(20);
+        assert_eq!(camera.line_to_screen(25), 5)
+    }
+
+    #[test]
+    pub fn to_screen_column__some_pos__result_is_correct() {
+        let camera = get_camera().with_left(20);
+        assert_eq!(camera.column_to_screen(25), 5)
+    }
+
+    #[test]
+    pub fn to_world_line__some_pos__result_is_correct() {
+        let camera = get_camera().with_top(20);
+        assert_eq!(camera.line_to_world(5), 25)
+    }
+
+    #[test]
+    pub fn to_world_column__some_pos__result_is_correct() {
+        let camera = get_camera().with_left(20);
+        assert_eq!(camera.column_to_world(5), 25)
+    }
 }

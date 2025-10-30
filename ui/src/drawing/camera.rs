@@ -55,6 +55,22 @@ impl Camera {
         self.height
     }
 
+    pub fn line_to_screen(&self, line: i32) -> i32 {
+        line - self.top
+    }
+
+    pub fn column_to_screen(&self, column: i32) -> i32 {
+        column - self.left
+    }
+
+    pub fn line_to_world(&self, line: i32) -> i32 {
+        line + self.top
+    }
+
+    pub fn column_to_world(&self, column: i32) -> i32 {
+        column + self.left
+    }
+
     pub fn contains(&self, line: i32, column: i32) -> bool {
         line >= self.top()
             && line <= self.bottom()

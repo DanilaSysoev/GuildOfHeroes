@@ -1,16 +1,16 @@
 use bracket_lib::{
     color::{BLACK, RGB, WHITE},
-    prelude::{BTerm, BTermBuilder, GameState, main_loop},
+    prelude::{BTerm, BTermBuilder, GameState, VirtualKeyCode, main_loop},
 };
 use engine::{
     services::world_building::{MapBuilder, MapBuilderFromHeights},
-    world::entities::global::{SurfaceType, map::Map},
+    world::entities::global::map::Map,
 };
 
 use crate::{
     config::{GameConfig, load_config},
     drawing::{
-        Camera,
+        Camera, Direction,
         tile_mapping::{SurfaceTile, TileMapper, build_surface_tile_mapper},
     },
     errors::GameUiError,
@@ -64,21 +64,47 @@ impl Game {
         main_loop(context, Game::new(config)?)?;
         Ok(())
     }
-}
 
-impl GameState for Game {
-    fn tick(&mut self, ctx: &mut BTerm) {
+    fn handle_input(&mut self, ctx: &mut BTerm) {
+        if let Some(key) = ctx.key {
+            match key {
+                VirtualKeyCode::Escape => ctx.quitting = true,
+                VirtualKeyCode::W | VirtualKeyCode::Up => {
+                    self.camera.shift(Direction::Up)
+                },
+                VirtualKeyCode::S | VirtualKeyCode::Down => {
+                    self.camera.shift(Direction::Down)
+                },
+                VirtualKeyCode::A | VirtualKeyCode::Left => {
+                    self.camera.shift(Direction::Left)
+                },
+                VirtualKeyCode::D | VirtualKeyCode::Right => {
+                    self.camera.shift(Direction::Right)
+                },
+                _ => {},
+            }
+        }
+    }
+
+    fn draw(&mut self, ctx: &mut BTerm) {
+        self.draw_map(ctx);
+    }
+
+    fn draw_map(&mut self, ctx: &mut BTerm) {
         ctx.set_active_console(0);
         ctx.cls();
-        for column in -1..self.camera.width() as i32 - 1 {
-            for line in -1..self.camera.height() as i32 - 1 {
+        for column in 0..self.camera.width() as i32 {
+            for line in 0..self.camera.height() as i32 {
                 let tile_surface = self
                     .map
-                    .get_tile((line, column))
+                    .get_tile((
+                        self.camera.line_to_world(line),
+                        self.camera.column_to_world(column),
+                    ))
                     .map(|tile| tile.surface_type());
                 ctx.set(
-                    column + 1,
-                    line + 1,
+                    column,
+                    line,
                     RGB::named(WHITE),
                     RGB::named(BLACK),
                     self.surface_mapper
@@ -87,5 +113,13 @@ impl GameState for Game {
                 );
             }
         }
+    }
+}
+
+impl GameState for Game {
+    fn tick(&mut self, ctx: &mut BTerm) {
+        self.handle_input(ctx);
+
+        self.draw(ctx);
     }
 }
