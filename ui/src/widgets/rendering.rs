@@ -27,8 +27,8 @@ impl MenuRenderer {
         ctx.draw_box(
             self.column,
             self.line,
-            menu.width() + config.left_border + config.right_border + 2,
-            menu.height() + config.top_border + config.bottom_border + 2,
+            menu.width() + config.left_border + config.right_border + 1,
+            menu.height() + config.top_border + config.bottom_border + 1,
             RGB::named(WHITE),
             RGB::named(BLACK),
         );

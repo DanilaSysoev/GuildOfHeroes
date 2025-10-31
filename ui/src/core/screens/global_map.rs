@@ -84,6 +84,8 @@ impl GlobalMapScreen {
     }
 
     fn draw_map(&mut self, ctx: &mut BTerm) {
+        ctx.set_active_console(MAIN_MENU_CONSOLE_INDEX);
+        ctx.cls_bg(RGBA::from_u8(0, 0, 0, 0));
         ctx.set_active_console(GLOBAL_MAP_CONSOLE_INDEX);
         ctx.cls();
         ctx.set_char_size(self.camera.width(), self.camera.height());
@@ -111,8 +113,14 @@ impl GlobalMapScreen {
 }
 
 impl Screen for GlobalMapScreen {
-    fn tick(&mut self, ctx: &mut BTerm, _: &mut Game) {
+    fn tick(
+        &mut self,
+        ctx: &mut BTerm,
+        _: &mut Game,
+    ) -> Result<(), GameUiError> {
         self.handle_input(ctx);
         self.draw(ctx);
+
+        Ok(())
     }
 }

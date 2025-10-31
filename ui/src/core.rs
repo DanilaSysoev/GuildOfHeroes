@@ -1,31 +1,30 @@
 pub mod components;
 mod screens;
 
-use bracket_lib::{
-    color::RGBA,
-    prelude::{BTerm, BTermBuilder, GameState, main_loop},
-};
+use bracket_lib::prelude::{BTerm, BTermBuilder, GameState, main_loop};
 
 const GLOBAL_MAP_CONSOLE_INDEX: usize = 0;
 const MAIN_MENU_CONSOLE_INDEX: usize = 1;
 
 use crate::{
     config::{GameConfig, load_config},
-    core::screens::{GlobalMapScreen, Screen},
-    errors::GameUiError,
+    core::screens::{MainMenuScreen, Screen},
+    errors::{GameUiError, processing::process_ui_error},
 };
 pub struct Game {
     screen: Option<Box<dyn Screen>>,
     width: u32,
     height: u32,
+    config: GameConfig,
 }
 
 impl Game {
     pub fn new(config: GameConfig) -> Result<Self, GameUiError> {
         Ok(Game {
-            screen: Some(Box::new(GlobalMapScreen::new(&config)?)),
+            screen: Some(Box::new(MainMenuScreen::new())),
             width: config.width,
             height: config.height,
+            config,
         })
     }
 
@@ -47,6 +46,10 @@ impl Game {
 
     pub fn height(&self) -> u32 {
         self.height
+    }
+
+    pub fn config(&self) -> &GameConfig {
+        &self.config
     }
 
     fn build_context(config: &GameConfig) -> Result<BTerm, GameUiError> {
@@ -82,22 +85,18 @@ impl Game {
 
         Ok(context)
     }
-
-    fn clear_consoles(&mut self, ctx: &mut BTerm) {
-        ctx.set_active_console(MAIN_MENU_CONSOLE_INDEX);
-        ctx.cls_bg(RGBA::from_u8(0, 0, 0, 0));
-
-        ctx.set_active_console(GLOBAL_MAP_CONSOLE_INDEX);
-        ctx.cls_bg(RGBA::from_u8(0, 0, 0, 0));
-    }
 }
 
 impl GameState for Game {
     fn tick(&mut self, ctx: &mut BTerm) {
-        self.clear_consoles(ctx);
         if let Some(mut screen) = self.screen.take() {
-            screen.tick(ctx, self);
-            self.screen = Some(screen);
+            if let Err(error) = screen.tick(ctx, self) {
+                process_ui_error(error);
+                ctx.quitting = true;
+            }
+            if self.screen.is_none() {
+                self.screen = Some(screen);
+            }
         }
     }
 }

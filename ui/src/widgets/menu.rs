@@ -2,17 +2,21 @@ use bracket_lib::prelude::BTerm;
 
 use crate::{
     core::{Game, components::GameEntity},
+    errors::GameUiError,
     widgets::geometry::Widget,
 };
 
 pub trait MenuAction {
-    fn run(&self, ctx: &mut BTerm, game: &mut Game);
+    fn run(&self, ctx: &mut BTerm, game: &mut Game)
+    -> Result<(), GameUiError>;
 }
 
 pub struct NullAction;
 
 impl MenuAction for NullAction {
-    fn run(&self, _: &mut BTerm, game: &mut Game) {}
+    fn run(&self, _: &mut BTerm, game: &mut Game) -> Result<(), GameUiError> {
+        Ok(())
+    }
 }
 
 pub struct MenuItem {
@@ -34,8 +38,12 @@ impl MenuItem {
         &self.text
     }
 
-    pub fn select(&self, ctx: &mut BTerm, game: &mut Game) {
-        self.action.run(ctx, game);
+    pub fn select(
+        &self,
+        ctx: &mut BTerm,
+        game: &mut Game,
+    ) -> Result<(), GameUiError> {
+        self.action.run(ctx, game)
     }
 }
 
@@ -50,13 +58,12 @@ impl Widget for MenuItem {
 
 #[derive(Default)]
 pub struct Menu {
-    console_index: usize,
     items: Vec<MenuItem>,
 }
 
 impl Menu {
-    pub fn new(console_index: usize) -> Self {
-        Menu { console_index, items: Vec::new() }
+    pub fn new() -> Self {
+        Menu { items: Vec::new() }
     }
 
     pub fn with_item(mut self, item: MenuItem) -> Self {
@@ -64,10 +71,17 @@ impl Menu {
         self
     }
 
-    pub fn select(&self, index: usize, ctx: &mut BTerm, game: &mut Game) {
+    pub fn select(
+        &self,
+        index: usize,
+        ctx: &mut BTerm,
+        game: &mut Game,
+    ) -> Result<(), GameUiError> {
         if let Some(item) = self.items.get(index) {
-            item.select(ctx, game);
+            return item.select(ctx, game);
         }
+
+        Ok(())
     }
 
     pub fn items(&self) -> &[MenuItem] {
