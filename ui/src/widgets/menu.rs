@@ -1,6 +1,6 @@
 use bracket_lib::prelude::BTerm;
 
-use crate::{core::GameEntity, widgets::geometry::Widget};
+use crate::{core::components::GameEntity, widgets::geometry::Widget};
 
 pub trait MenuAction {
     fn run(&self, ctx: &mut BTerm);
