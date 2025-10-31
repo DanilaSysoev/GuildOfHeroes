@@ -66,6 +66,10 @@ impl Menu {
             item.select(ctx);
         }
     }
+
+    pub fn items(&self) -> &[MenuItem] {
+        &self.items
+    }
 }
 
 impl Widget for Menu {

@@ -1,17 +1,21 @@
-use bracket_lib::prelude::BTerm;
+use bracket_lib::{
+    color::{BLACK, RGB, WHITE},
+    prelude::BTerm,
+};
 
 use crate::{
     config::MenuRenderedConfig,
-    widgets::{geometry::WidgetPosition, menu::Menu},
+    widgets::{geometry::Widget, menu::Menu},
 };
 
 struct MenuRenderer {
-    position: WidgetPosition,
+    line: i32,
+    column: i32,
 }
 
 impl MenuRenderer {
     pub fn new(line: i32, column: i32) -> Self {
-        Self { position: WidgetPosition::new(line, column) }
+        Self { line, column }
     }
 
     pub fn render(
@@ -20,6 +24,21 @@ impl MenuRenderer {
         ctx: &mut BTerm,
         config: &MenuRenderedConfig,
     ) {
-        todo!();
+        ctx.draw_box(
+            self.column,
+            self.line,
+            menu.width() + config.left_border + config.right_border + 2,
+            menu.height() + config.top_border + config.bottom_border + 2,
+            RGB::named(WHITE),
+            RGB::named(BLACK),
+        );
+
+        for (index, item) in menu.items().iter().enumerate() {
+            ctx.print(
+                self.column + 1 + config.left_border as i32,
+                self.line + 1 + config.top_border as i32 + index as i32,
+                item.text(),
+            );
+        }
     }
 }
