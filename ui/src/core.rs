@@ -16,11 +16,17 @@ use crate::{
 };
 pub struct Game {
     screen: Option<Box<dyn Screen>>,
+    width: u32,
+    height: u32,
 }
 
 impl Game {
     pub fn new(config: GameConfig) -> Result<Self, GameUiError> {
-        Ok(Game { screen: Some(Box::new(GlobalMapScreen::new(&config)?)) })
+        Ok(Game {
+            screen: Some(Box::new(GlobalMapScreen::new(&config)?)),
+            width: config.width,
+            height: config.height,
+        })
     }
 
     pub fn run() -> Result<(), GameUiError> {
@@ -33,6 +39,14 @@ impl Game {
 
     pub fn switch_screen(&mut self, screen: Box<dyn Screen>) {
         self.screen = Some(screen);
+    }
+
+    pub fn width(&self) -> u32 {
+        self.width
+    }
+
+    pub fn height(&self) -> u32 {
+        self.height
     }
 
     fn build_context(config: &GameConfig) -> Result<BTerm, GameUiError> {
@@ -53,7 +67,7 @@ impl Game {
                 config.surface_font.width,
                 config.surface_font.height,
             )
-            .with_dimensions(config.camera.width, config.camera.height)
+            .with_dimensions(config.width, config.height)
             .with_simple_console(
                 config.camera.width,
                 config.camera.height,

@@ -2,7 +2,10 @@ use bracket_lib::prelude::BTerm;
 
 use crate::{
     core::{Game, MAIN_MENU_CONSOLE_INDEX, screens::Screen},
-    widgets::menu::{Menu, MenuAction, MenuItem},
+    widgets::{
+        menu::{Menu, MenuAction, MenuItem},
+        rendering::MenuRenderer,
+    },
 };
 
 pub struct MainMenuScreen {
@@ -13,6 +16,8 @@ impl Screen for MainMenuScreen {
     fn tick(&mut self, ctx: &mut BTerm, game: &mut Game) {
         ctx.set_active_console(MAIN_MENU_CONSOLE_INDEX);
         ctx.cls();
+
+        todo!()
     }
 }
 

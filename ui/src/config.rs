@@ -69,6 +69,8 @@ pub struct GameConfig {
     pub surface_font: FontConfig,
     pub text_font: FontConfig,
     pub menu_renderer: MenuRenderedConfig,
+    pub width: u32,
+    pub height: u32,
 }
 
 pub fn load_config() -> Result<GameConfig, GameUiError> {
