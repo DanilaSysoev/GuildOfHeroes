@@ -2,10 +2,6 @@ use bracket_lib::{
     color::{BLACK, RGB, RGBA, WHITE},
     prelude::{BTerm, VirtualKeyCode},
 };
-use engine::{
-    services::world_building::{MapBuilder, MapBuilderFromHeights},
-    world::entities::global::map::Map,
-};
 
 use crate::{
     config::GameConfig,
@@ -18,7 +14,6 @@ use crate::{
         tile_mapping::{SurfaceTile, TileMapper, build_surface_tile_mapper},
     },
     errors::GameUiError,
-    utils::map_gen::generate_heightmap_f64_2d,
 };
 
 pub struct GlobalMapScreen {

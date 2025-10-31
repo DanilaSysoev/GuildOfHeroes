@@ -1,10 +1,6 @@
-use bracket_lib::prelude::BTerm;
+use bracket_lib::prelude::{BTerm, VirtualKeyCode};
 
-use crate::{
-    core::{Game, components::GameEntity},
-    errors::GameUiError,
-    widgets::geometry::Widget,
-};
+use crate::{core::Game, errors::GameUiError, widgets::geometry::Widget};
 
 pub trait MenuAction {
     fn run(&self, ctx: &mut BTerm, game: &mut Game)
@@ -14,7 +10,7 @@ pub trait MenuAction {
 pub struct NullAction;
 
 impl MenuAction for NullAction {
-    fn run(&self, _: &mut BTerm, game: &mut Game) -> Result<(), GameUiError> {
+    fn run(&self, _: &mut BTerm, _: &mut Game) -> Result<(), GameUiError> {
         Ok(())
     }
 }
@@ -58,7 +54,7 @@ impl Widget for MenuItem {
 
 #[derive(Default)]
 pub struct Menu {
-    items: Vec<MenuItem>,
+    items: Vec<(VirtualKeyCode, MenuItem)>,
 }
 
 impl Menu {
@@ -66,9 +62,19 @@ impl Menu {
         Menu { items: Vec::new() }
     }
 
-    pub fn with_item(mut self, item: MenuItem) -> Self {
-        self.items.push(item);
-        self
+    pub fn with_item(
+        mut self,
+        key: VirtualKeyCode,
+        item: MenuItem,
+    ) -> Result<Self, GameUiError> {
+        if self.items.iter().any(|pair| pair.0 == key) {
+            return Err(GameUiError::Configuration {
+                what: "Error: try bild menu with repeated key".to_string(),
+            });
+        }
+
+        self.items.push((key, item));
+        Ok(self)
     }
 
     pub fn select(
@@ -78,14 +84,27 @@ impl Menu {
         game: &mut Game,
     ) -> Result<(), GameUiError> {
         if let Some(item) = self.items.get(index) {
-            return item.select(ctx, game);
+            return item.1.select(ctx, game);
         }
 
         Ok(())
     }
 
-    pub fn items(&self) -> &[MenuItem] {
+    pub fn items(&self) -> &[(VirtualKeyCode, MenuItem)] {
         &self.items
+    }
+
+    pub fn select_item_if_user_requested(
+        &self,
+        ctx: &mut BTerm,
+        game: &mut Game,
+    ) {
+        if let Some(key) = ctx.key
+            && let Some(index) =
+                self.items.iter().position(|pair| pair.0 == key)
+        {
+            self.select(index, ctx, game).unwrap();
+        }
     }
 }
 
@@ -95,18 +114,12 @@ impl Widget for Menu {
         self
             .items
             .iter()
-            .map(|item| item.width())
+            .map(|item| item.1.width())
             .max()
             .unwrap_or(0)
     }
 
     fn height(&self) -> u32 {
         self.items.len() as u32
-    }
-}
-
-impl GameEntity for Menu {
-    fn update(&mut self, ctx: &mut BTerm) {
-        todo!()
     }
 }

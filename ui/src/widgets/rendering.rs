@@ -37,7 +37,7 @@ impl MenuRenderer {
             ctx.print(
                 self.column + 1 + config.left_border as i32,
                 self.line + 1 + config.top_border as i32 + index as i32,
-                item.text(),
+                item.1.text(),
             );
         }
     }

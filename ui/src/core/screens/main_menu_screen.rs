@@ -1,7 +1,6 @@
 use bracket_lib::prelude::{BTerm, VirtualKeyCode};
 
 use crate::{
-    config::MenuRenderedConfig,
     core::{
         Game, MAIN_MENU_CONSOLE_INDEX,
         screens::{GlobalMapScreen, Screen},
@@ -27,6 +26,36 @@ impl Screen for MainMenuScreen {
         ctx.set_active_console(MAIN_MENU_CONSOLE_INDEX);
         ctx.cls();
 
+        self.create_renderer(game).render(
+            &self.menu,
+            ctx,
+            &game.config.menu_renderer,
+        );
+
+        self.menu.select_item_if_user_requested(ctx, game);
+
+        Ok(())
+    }
+}
+
+impl MainMenuScreen {
+    pub fn new() -> Result<Self, GameUiError> {
+        Ok(MainMenuScreen {
+            menu: Menu::new()
+                .with_item(
+                    VirtualKeyCode::Key1,
+                    MenuItem::new("1. Start game")
+                        .with_action(Box::new(ToGlobalMapAction)),
+                )?
+                .with_item(
+                    VirtualKeyCode::Key2,
+                    MenuItem::new("2. Quit game")
+                        .with_action(Box::new(ExitAction)),
+                )?,
+        })
+    }
+
+    fn create_renderer(&mut self, game: &mut Game) -> MenuRenderer {
         MenuRenderer::new(
             ((game.height() - self.menu.height()) / 2
                 - 1
@@ -35,37 +64,6 @@ impl Screen for MainMenuScreen {
                 - 1
                 - game.config().menu_renderer.left_border) as i32,
         )
-        .render(&self.menu, ctx, &game.config.menu_renderer);
-
-        if let Some(key) = ctx.key {
-            match key {
-                VirtualKeyCode::Key1 => {
-                    return self.menu.select(0, ctx, game);
-                },
-                VirtualKeyCode::Key2 => {
-                    return self.menu.select(1, ctx, game);
-                },
-                _ => return Ok(()),
-            }
-        }
-
-        Ok(())
-    }
-}
-
-impl MainMenuScreen {
-    pub fn new() -> Self {
-        MainMenuScreen {
-            menu: Menu::new()
-                .with_item(
-                    MenuItem::new("1. Start game")
-                        .with_action(Box::new(ToGlobalMapAction)),
-                )
-                .with_item(
-                    MenuItem::new("2. Quit game")
-                        .with_action(Box::new(ExitAction)),
-                ),
-        }
     }
 }
 

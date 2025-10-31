@@ -1,4 +1,3 @@
-pub mod components;
 mod screens;
 
 use bracket_lib::prelude::{BTerm, BTermBuilder, GameState, main_loop};
@@ -34,7 +33,7 @@ impl Game {
                 .as_slice(),
         );
         Ok(Game {
-            screen: Some(Box::new(MainMenuScreen::new())),
+            screen: Some(Box::new(MainMenuScreen::new()?)),
             width: config.width,
             height: config.height,
             config,

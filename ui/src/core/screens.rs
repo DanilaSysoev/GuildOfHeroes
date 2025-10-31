@@ -1,9 +1,9 @@
-mod global_map;
-mod main_menu;
+mod global_map_screen;
+mod main_menu_screen;
 
 use bracket_lib::prelude::BTerm;
-pub use global_map::GlobalMapScreen;
-pub use main_menu::MainMenuScreen;
+pub use global_map_screen::GlobalMapScreen;
+pub use main_menu_screen::MainMenuScreen;
 
 use crate::{core::Game, errors::GameUiError};
 
