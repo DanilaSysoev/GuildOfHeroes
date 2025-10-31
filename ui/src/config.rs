@@ -67,6 +67,7 @@ pub struct GameConfig {
     pub camera: CameraConfig,
     pub map: MapConfig,
     pub surface_font: FontConfig,
+    pub text_font: FontConfig,
     pub menu_renderer: MenuRenderedConfig,
 }
 

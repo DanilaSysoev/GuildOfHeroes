@@ -1,15 +1,18 @@
 use bracket_lib::prelude::BTerm;
 
-use crate::{core::components::GameEntity, widgets::geometry::Widget};
+use crate::{
+    core::{Game, components::GameEntity},
+    widgets::geometry::Widget,
+};
 
 pub trait MenuAction {
-    fn run(&self, ctx: &mut BTerm);
+    fn run(&self, ctx: &mut BTerm, game: &mut Game);
 }
 
 pub struct NullAction;
 
 impl MenuAction for NullAction {
-    fn run(&self, _: &mut BTerm) {}
+    fn run(&self, _: &mut BTerm, game: &mut Game) {}
 }
 
 pub struct MenuItem {
@@ -31,8 +34,8 @@ impl MenuItem {
         &self.text
     }
 
-    pub fn select(&self, ctx: &mut BTerm) {
-        self.action.run(ctx);
+    pub fn select(&self, ctx: &mut BTerm, game: &mut Game) {
+        self.action.run(ctx, game);
     }
 }
 
@@ -56,14 +59,14 @@ impl Menu {
         Menu { console_index, items: Vec::new() }
     }
 
-    pub fn with_item(&mut self, item: MenuItem) -> &mut Self {
+    pub fn with_item(mut self, item: MenuItem) -> Self {
         self.items.push(item);
         self
     }
 
-    pub fn select(&self, index: usize, ctx: &mut BTerm) {
+    pub fn select(&self, index: usize, ctx: &mut BTerm, game: &mut Game) {
         if let Some(item) = self.items.get(index) {
-            item.select(ctx);
+            item.select(ctx, game);
         }
     }
 

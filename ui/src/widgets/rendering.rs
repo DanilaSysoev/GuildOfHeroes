@@ -8,7 +8,7 @@ use crate::{
     widgets::{geometry::Widget, menu::Menu},
 };
 
-struct MenuRenderer {
+pub struct MenuRenderer {
     line: i32,
     column: i32,
 }

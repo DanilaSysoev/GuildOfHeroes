@@ -1,5 +1,5 @@
 use bracket_lib::{
-    color::{BLACK, RGB, WHITE},
+    color::{BLACK, RGB, RGBA, WHITE},
     prelude::{BTerm, VirtualKeyCode},
 };
 use engine::{
@@ -9,7 +9,10 @@ use engine::{
 
 use crate::{
     config::GameConfig,
-    core::states::Screen,
+    core::{
+        GLOBAL_MAP_CONSOLE_INDEX, Game, MAIN_MENU_CONSOLE_INDEX,
+        screens::Screen,
+    },
     drawing::{
         Camera, Direction,
         tile_mapping::{SurfaceTile, TileMapper, build_surface_tile_mapper},
@@ -81,7 +84,7 @@ impl GlobalMapScreen {
     }
 
     fn draw_map(&mut self, ctx: &mut BTerm) {
-        ctx.set_active_console(0);
+        ctx.set_active_console(GLOBAL_MAP_CONSOLE_INDEX);
         ctx.cls();
         ctx.set_char_size(self.camera.width(), self.camera.height());
         for column in 0..self.camera.width() as i32 {
@@ -108,7 +111,7 @@ impl GlobalMapScreen {
 }
 
 impl Screen for GlobalMapScreen {
-    fn tick(&mut self, ctx: &mut BTerm) {
+    fn tick(&mut self, ctx: &mut BTerm, _: &mut Game) {
         self.handle_input(ctx);
         self.draw(ctx);
     }
