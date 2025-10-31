@@ -2,6 +2,10 @@ pub mod components;
 mod screens;
 
 use bracket_lib::prelude::{BTerm, BTermBuilder, GameState, main_loop};
+use engine::{
+    services::world_building::{MapBuilder, MapBuilderFromHeights},
+    world::entities::global::map::Map,
+};
 
 const GLOBAL_MAP_CONSOLE_INDEX: usize = 0;
 const MAIN_MENU_CONSOLE_INDEX: usize = 1;
@@ -10,21 +14,31 @@ use crate::{
     config::{GameConfig, load_config},
     core::screens::{MainMenuScreen, Screen},
     errors::{GameUiError, processing::process_ui_error},
+    utils::map_gen::generate_heightmap_f64_2d,
 };
 pub struct Game {
     screen: Option<Box<dyn Screen>>,
     width: u32,
     height: u32,
     config: GameConfig,
+    map: Map,
 }
 
 impl Game {
     pub fn new(config: GameConfig) -> Result<Self, GameUiError> {
+        let map_builder = MapBuilderFromHeights::new(
+            generate_heightmap_f64_2d(&config.map)
+                .iter()
+                .map(|vec| vec.as_slice())
+                .collect::<Vec<_>>()
+                .as_slice(),
+        );
         Ok(Game {
             screen: Some(Box::new(MainMenuScreen::new())),
             width: config.width,
             height: config.height,
             config,
+            map: map_builder.build()?,
         })
     }
 
@@ -50,6 +64,14 @@ impl Game {
 
     pub fn config(&self) -> &GameConfig {
         &self.config
+    }
+
+    pub fn map(&self) -> &Map {
+        &self.map
+    }
+
+    pub fn map_mut(&mut self) -> &mut Map {
+        &mut self.map
     }
 
     fn build_context(config: &GameConfig) -> Result<BTerm, GameUiError> {

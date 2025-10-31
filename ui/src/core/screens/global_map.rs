@@ -22,22 +22,13 @@ use crate::{
 };
 
 pub struct GlobalMapScreen {
-    map: Map,
     camera: Camera,
     surface_mapper: TileMapper<SurfaceTile>,
 }
 
 impl GlobalMapScreen {
     pub fn new(config: &GameConfig) -> Result<Self, GameUiError> {
-        let map_builder = MapBuilderFromHeights::new(
-            generate_heightmap_f64_2d(&config.map)
-                .iter()
-                .map(|vec| vec.as_slice())
-                .collect::<Vec<_>>()
-                .as_slice(),
-        );
         Ok(GlobalMapScreen {
-            map: map_builder.build()?,
             camera: Camera::new(
                 config.camera.width,
                 config.camera.min_width,
@@ -79,11 +70,11 @@ impl GlobalMapScreen {
         }
     }
 
-    fn draw(&mut self, ctx: &mut BTerm) {
-        self.draw_map(ctx);
+    fn draw(&mut self, ctx: &mut BTerm, game: &mut Game) {
+        self.draw_map(ctx, game);
     }
 
-    fn draw_map(&mut self, ctx: &mut BTerm) {
+    fn draw_map(&mut self, ctx: &mut BTerm, game: &mut Game) {
         ctx.set_active_console(MAIN_MENU_CONSOLE_INDEX);
         ctx.cls_bg(RGBA::from_u8(0, 0, 0, 0));
         ctx.set_active_console(GLOBAL_MAP_CONSOLE_INDEX);
@@ -91,8 +82,8 @@ impl GlobalMapScreen {
         ctx.set_char_size(self.camera.width(), self.camera.height());
         for column in 0..self.camera.width() as i32 {
             for line in 0..self.camera.height() as i32 {
-                let tile_surface = self
-                    .map
+                let tile_surface = game
+                    .map()
                     .get_tile((
                         self.camera.line_to_world(line),
                         self.camera.column_to_world(column),
@@ -116,10 +107,10 @@ impl Screen for GlobalMapScreen {
     fn tick(
         &mut self,
         ctx: &mut BTerm,
-        _: &mut Game,
+        game: &mut Game,
     ) -> Result<(), GameUiError> {
         self.handle_input(ctx);
-        self.draw(ctx);
+        self.draw(ctx, game);
 
         Ok(())
     }
