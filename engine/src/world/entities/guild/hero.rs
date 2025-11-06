@@ -1,24 +1,25 @@
 mod attributes;
+pub mod builders;
 mod traits;
 
 use crate::world::entities::guild::MissionContext;
 
-trait AttributeEffects {
-    fn apply_to_mission(&self, mission_context: &mut MissionContext);
+pub trait AttributeEffect {
+    fn apply_to_mission(
+        &self,
+        attribute: &HeroAttribute,
+        mission_context: &mut MissionContext,
+    );
 }
 
 pub struct HeroAttribute {
     name: String,
     value: i32,
-    effect: &'static dyn AttributeEffects,
+    effect: Box<dyn AttributeEffect>,
 }
 
 impl HeroAttribute {
-    fn new(
-        name: &str,
-        value: i32,
-        effect: &'static dyn AttributeEffects,
-    ) -> Self {
+    fn new(name: &str, value: i32, effect: Box<dyn AttributeEffect>) -> Self {
         HeroAttribute { name: name.to_string(), value, effect }
     }
 
@@ -31,22 +32,22 @@ impl HeroAttribute {
     }
 
     pub fn apply_to_mission(&self, mission_context: &mut MissionContext) {
-        self.effect.apply_to_mission(mission_context);
+        self.effect.apply_to_mission(self, mission_context);
     }
 }
 
-trait TraitErrect {
+pub trait TraitEffect {
     fn apply_addition_effect(&self, hero: &mut Hero);
     fn apply_removing_effect(&self, hero: &mut Hero);
 }
 
 pub struct HeroTrait {
     name: String,
-    effect: &'static dyn TraitErrect,
+    effect: Box<dyn TraitEffect>,
 }
 
 impl HeroTrait {
-    fn new(name: &str, effect: &'static dyn TraitErrect) -> Self {
+    fn new(name: &str, effect: Box<dyn TraitEffect>) -> Self {
         HeroTrait { name: name.to_string(), effect }
     }
 
